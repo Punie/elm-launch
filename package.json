@@ -1,0 +1,79 @@
+{
+  "name": "elm-launch",
+  "version": "0.0.1",
+  "description": "Elm starter template with typescript and webpack",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Punie/elm-launch"
+  },
+  "author": {
+    "name": "Hugo Saracino",
+    "email": "hugo.saracino@gmail.com"
+  },
+  "license": "BSD-3-Clause",
+  "scripts": {
+    "webpack": "webpack",
+    "webpack-dev-server": "webpack-dev-server",
+    "prod": "npm run -s webpack -- --env.mode production",
+    "dev": "npm run -s webpack-dev-server -- --env.mode development --hot",
+    "preprod": "rimraf dist",
+    "lint": "concurrently \"npm:lint:css\" \"npm:lint:ts\" \"npm:lint:elm\"",
+    "lint:css": "stylelint static/styles",
+    "lint:ts": "tslint src/**/*.ts --project tsconfig.json",
+    "lint:elm": "elm-format --validate src tests",
+    "test": "elm-test tests/Tests.elm --compiler ./node_modules/.bin/elm",
+    "test:watch": "npm run -s test -- --watch"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint &> /dev/null",
+      "commit-msg": "commitlint -g .commitlintrc.json -E HUSKY_GIT_PARAMS",
+      "pre-push": "npm run test"
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "@commitlint/cli": "^7.1.2",
+    "@types/node": "^10.9.4",
+    "commitlint-config-gitmoji": "^1.0.1",
+    "concurrently": "^4.0.1",
+    "copy-webpack-plugin": "^4.5.2",
+    "css-loader": "^1.0.0",
+    "elm": "^0.19.0-bugfix2",
+    "elm-format": "^0.8.0",
+    "elm-hot-webpack-loader": "^1.0.1",
+    "elm-test": "^0.19.0-beta8",
+    "elm-webpack-loader": "^5.0.0",
+    "file-loader": "^2.0.0",
+    "html-webpack-plugin": "^3.2.0",
+    "husky": "^1.0.0-rc.13",
+    "imagemin-webpack-plugin": "^2.2.0",
+    "lint-webpack-plugin": "^0.1.1",
+    "mini-css-extract-plugin": "^0.4.2",
+    "node-sass": "^4.9.3",
+    "optimize-css-assets-webpack-plugin": "^5.0.1",
+    "postcss-loader": "^3.0.0",
+    "postcss-preset-env": "^5.3.0",
+    "purify-css": "^1.2.5",
+    "purifycss-webpack": "^0.7.0",
+    "rimraf": "^2.6.2",
+    "sass-loader": "^7.1.0",
+    "style-loader": "^0.23.0",
+    "stylelint": "^9.5.0",
+    "stylelint-config-standard": "^18.2.0",
+    "stylelint-webpack-plugin": "^0.10.5",
+    "ts-loader": "^5.1.0",
+    "tslint": "^5.11.0",
+    "tslint-config-airbnb": "^5.11.0",
+    "tslint-loader": "^3.6.0",
+    "typescript": "^3.0.3",
+    "webpack": "^4.17.2",
+    "webpack-cli": "^3.1.0",
+    "webpack-dev-server": "^3.1.8",
+    "webpack-merge": "^4.1.4"
+  }
+}

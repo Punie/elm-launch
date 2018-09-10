@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "node",
+    "target": "es5",
+    "lib": ["dom", "es6"],
+    "strict": true,
+    "sourceMap": false,
+    "noUnusedLocals": true
+  },
+  "exclude": ["dist", "functions", "elm-stuff", "node_modules"]
+}

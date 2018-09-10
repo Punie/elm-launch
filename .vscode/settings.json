@@ -1,0 +1,14 @@
+{
+  "[elm]": {
+      "editor.formatOnSave": true
+  },
+  "elm.compiler": "./node_modules/.bin/elm",
+  "elm.formatCommand": "./node_modules/.bin/elm-format",
+  "javascript.preferences.quoteStyle": "single",
+  "typescript.preferences.quoteStyle": "single",
+  "npm-intellisense.importQuotes": "'",
+  "prettier.singleQuote": true,
+  "prettier.tabWidth": 2,
+  "prettier.trailingComma": "none",
+  "prettier.tslintIntegration": true
+}
