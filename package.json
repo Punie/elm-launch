@@ -1,7 +1,7 @@
 {
   "name": "elm-launch",
   "version": "0.0.1",
-  "description": "Elm starter template with typescript and webpack",
+  "description": "Elm starter template with typescript, firebase and webpack",
   "repository": {
     "type": "git",
     "url": "https://github.com/Punie/elm-launch"
@@ -35,9 +35,12 @@
     "> 1%",
     "last 2 versions"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "firebase": "^5.4.2"
+  },
   "devDependencies": {
     "@commitlint/cli": "^7.1.2",
+    "@types/firebase": "^3.2.1",
     "@types/node": "^10.9.4",
     "commitlint-config-gitmoji": "^1.0.1",
     "concurrently": "^4.0.1",

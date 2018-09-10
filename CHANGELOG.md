@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+-   Added support for firebase (authentication, cloud firestore, cloud storage and cloud functions)
 -   This CHANGELOG.md file.
 
 ## 0.0.1 - 2018-09-10
