@@ -2,6 +2,8 @@
 
 :construction: This is very much a _Work in Progress_ thingy!
 
+### [Demo](https://elm-launch.firebaseapp.com/)
+
 :warning: This is _NOT_ yet another _webpack-boilerplate-starter-pack-thingy_.
 _**A LOT**_ of stuff in here is 100% unnecessary to most Elm projects. Many solutions to non-problems are over-engineered :books: to the point it's not even funny.
 
