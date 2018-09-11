@@ -1,5 +1,6 @@
 const path = require('path');
 const webpackMerge = require('webpack-merge');
+const Dotenv = require('dotenv-webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const LintPlugin = require('lint-webpack-plugin');
 const StyleLintPlugin = require('stylelint-webpack-plugin');
@@ -46,6 +47,12 @@ module.exports = ({ mode } = { mode: 'production' }) => {
       },
 
       plugins: [
+        new Dotenv({
+          path: '.env',
+          safe: true,
+          systemvars: true
+        }),
+
         new HtmlWebpackPlugin({
           template: path.join('src', 'static', 'index.html'),
           inject: 'body',
