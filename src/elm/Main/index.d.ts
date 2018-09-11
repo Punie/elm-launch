@@ -14,7 +14,38 @@ export namespace Elm {
 
   /* App Types */
 
+  export interface AuthInfo {
+    email: string;
+    password: string;
+  }
+
+  export interface AuthError {
+    code: string;
+    message: string;
+  }
+
+  export interface User {
+    displayName: string | null;
+    email: string | null;
+    photoURL: string | null;
+  }
+
+  export interface Flags {
+    user: User | null;
+  }
+
   export interface Ports {
+    login: Cmd<AuthInfo>;
+    loginFailed: Sub<AuthError>;
+    signup: Cmd<AuthInfo>;
+    signupFailed: Sub<AuthError>;
+    logout: Cmd<void>;
+    onAuthStateChange: Sub<User | null>;
+  }
+
+  export interface Config {
+    node?: HTMLElement | null;
+    flags: Flags;
   }
 
   export interface App {
@@ -22,8 +53,6 @@ export namespace Elm {
   }
 
   export namespace Main {
-    export function init(config: {
-      node: HTMLElement | null
-    }): App;
+    export function init(config: Config): App;
   }
 }
