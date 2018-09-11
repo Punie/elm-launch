@@ -33,11 +33,6 @@ authStateInit(app)
       app
         .auth()
         .signInWithEmailAndPassword(email, password)
-        .then(res => {
-          if (res.user) {
-            console.log(res.user.email);
-          }
-        })
         .catch(elm.ports.loginFailed.send);
     });
 
@@ -45,11 +40,6 @@ authStateInit(app)
       app
         .auth()
         .createUserWithEmailAndPassword(email, password)
-        .then(res => {
-          if (res.user) {
-            console.log(res.user.email);
-          }
-        })
         .catch(elm.ports.signupFailed.send);
     });
   });
