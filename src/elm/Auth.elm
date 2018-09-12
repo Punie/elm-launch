@@ -3,6 +3,8 @@ port module Auth exposing
     , CommonError(..)
     , LoginError(..)
     , SignupError(..)
+    , fromLoginError
+    , fromSignupError
     , login
     , logout
     , onAuthStateChange
@@ -71,6 +73,44 @@ onLoginFailed toMsg =
 onSignupFailed : (SignupError -> msg) -> Sub msg
 onSignupFailed toMsg =
     signupFailed (toMsg << toSignupError)
+
+
+fromLoginError : LoginError -> String
+fromLoginError error =
+    case error of
+        UserDisabled message ->
+            message
+
+        UserNotFound message ->
+            message
+
+        WrongPassword message ->
+            message
+
+        LoginError (InvalidEmail message) ->
+            message
+
+        LoginError (Other _ message) ->
+            message
+
+
+fromSignupError : SignupError -> String
+fromSignupError error =
+    case error of
+        EmailAlreadyInUse message ->
+            message
+
+        OperationNotAllowed message ->
+            message
+
+        WeakPassword message ->
+            message
+
+        SignupError (InvalidEmail message) ->
+            message
+
+        SignupError (Other _ message) ->
+            message
 
 
 

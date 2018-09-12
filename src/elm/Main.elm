@@ -8,10 +8,14 @@ import Page
 import Page.Home as Home
 import Page.Login as Login
 import Page.Signup as Signup
-import Route exposing (Route)
+import Route
 import Session exposing (Session)
 import Url exposing (Url)
 import User exposing (User)
+
+
+
+-- MAIN
 
 
 main : Program Flags Model Msg
@@ -26,8 +30,8 @@ main =
         }
 
 
-type alias Flags =
-    { user : Maybe User }
+
+-- MODEL
 
 
 type Model
@@ -38,71 +42,26 @@ type Model
     | Signup Signup.Model
 
 
+{-| Only the user is given at the start of the application.
+However, it's conceivable that we'll want to add other parameters
+at some point so we might as well put it in a record.
+-}
+type alias Flags =
+    { user : Maybe User }
+
+
+
+-- INIT
+
+
 init : Flags -> Url -> Key -> ( Model, Cmd Msg )
 init { user } url key =
-    stepUrl url <|
-        Redirect (Session.init key user)
-
-
-stepUrl : Url -> Model -> ( Model, Cmd Msg )
-stepUrl url model =
-    let
-        session =
-            toSession model
-    in
-    case Route.fromUrl url of
-        Just Route.Home ->
-            stepHome (Home.init session)
-
-        Just Route.Login ->
-            stepLogin (Login.init session)
-
-        Just Route.Signup ->
-            stepSignup (Signup.init session)
-
-        Nothing ->
-            ( NotFound session, Cmd.none )
-
-
-stepHome : ( Home.Model, Cmd Home.Msg ) -> ( Model, Cmd Msg )
-stepHome ( model, msg ) =
-    ( Home model
-    , Cmd.map HomeMsg msg
-    )
-
-
-stepLogin : ( Login.Model, Cmd Login.Msg ) -> ( Model, Cmd Msg )
-stepLogin ( model, msg ) =
-    ( Login model
-    , Cmd.map LoginMsg msg
-    )
-
-
-stepSignup : ( Signup.Model, Cmd Signup.Msg ) -> ( Model, Cmd Msg )
-stepSignup ( model, msg ) =
-    ( Signup model
-    , Cmd.map SignupMsg msg
-    )
+    Redirect (Session.init key user)
+        |> stepUrl url
 
 
 
--- changeRouteTo : Maybe Route -> Model -> ( Model, Cmd Msg )
--- changeRouteTo maybeRoute model =
---     let
---         session =
---             toSession model
---     in
---     case maybeRoute of
---         Just Route.Home ->
---             let
---                 ( homeModel, homeCmd ) =
---                     Home.init session
---             in
---             ( Home homeModel
---             , Cmd.map HomeMsg homeCmd
---             )
---         _ ->
---             ( NotFound session, Cmd.none )
+-- MSG
 
 
 type Msg
@@ -115,8 +74,16 @@ type Msg
     | Logout
 
 
+
+-- UPDATE
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
+    let
+        session =
+            toSession model
+    in
     case msg of
         Ignored ->
             ( model, Cmd.none )
@@ -125,7 +92,7 @@ update msg model =
             case urlRequest of
                 Internal url ->
                     ( model
-                    , Browser.Navigation.pushUrl (Session.navKey (toSession model)) (Url.toString url)
+                    , Browser.Navigation.pushUrl (Session.navKey session) (Url.toString url)
                     )
 
                 External url ->
@@ -136,26 +103,29 @@ update msg model =
         UrlChanged url ->
             stepUrl url model
 
-        HomeMsg subMsg ->
+        HomeMsg pageMsg ->
             case model of
-                Home home ->
-                    stepHome (Home.update subMsg home)
+                Home pageModel ->
+                    Home.update pageMsg pageModel
+                        |> stepPage Home HomeMsg model
 
                 _ ->
                     ( model, Cmd.none )
 
-        LoginMsg subMsg ->
+        LoginMsg pageMsg ->
             case model of
-                Login login ->
-                    stepLogin (Login.update subMsg login)
+                Login pageModel ->
+                    Login.update pageMsg pageModel
+                        |> stepPage Login LoginMsg model
 
                 _ ->
                     ( model, Cmd.none )
 
-        SignupMsg subMsg ->
+        SignupMsg pageMsg ->
             case model of
-                Signup signup ->
-                    stepSignup (Signup.update subMsg signup)
+                Signup pageModel ->
+                    Signup.update pageMsg pageModel
+                        |> stepPage Signup SignupMsg model
 
                 _ ->
                     ( model, Cmd.none )
@@ -164,20 +134,28 @@ update msg model =
             ( model, Auth.logout () )
 
 
+
+-- SUBSCRIPTIONS
+
+
 subscriptions : Model -> Sub Msg
 subscriptions model =
     case model of
-        Home home ->
-            Sub.map HomeMsg (Home.subscriptions home)
+        Home pageModel ->
+            Sub.map HomeMsg (Home.subscriptions pageModel)
 
-        Login login ->
-            Sub.map LoginMsg (Login.subscriptions login)
+        Login pageModel ->
+            Sub.map LoginMsg (Login.subscriptions pageModel)
 
-        Signup signup ->
-            Sub.map SignupMsg (Signup.subscriptions signup)
+        Signup pageModel ->
+            Sub.map SignupMsg (Signup.subscriptions pageModel)
 
         _ ->
             Sub.none
+
+
+
+-- VIEW
 
 
 view : Model -> Document Msg
@@ -203,29 +181,63 @@ view model =
                 , content = Element.text "Four, oh four!"
                 }
 
-        Home home ->
+        Home pageModel ->
             Page.view
                 Logout
                 session
                 { title = "Home"
-                , content = Element.map HomeMsg <| Home.view home
+                , content = Element.map HomeMsg <| Home.view pageModel
                 }
 
-        Login login ->
+        Login pageModel ->
             Page.view
                 Logout
                 session
                 { title = "Login"
-                , content = Element.map LoginMsg <| Login.view login
+                , content = Element.map LoginMsg <| Login.view pageModel
                 }
 
-        Signup signup ->
+        Signup pageModel ->
             Page.view
                 Logout
                 session
                 { title = "Signup"
-                , content = Element.map SignupMsg <| Signup.view signup
+                , content = Element.map SignupMsg <| Signup.view pageModel
                 }
+
+
+
+-- HELPERS
+
+
+stepUrl : Url -> Model -> ( Model, Cmd Msg )
+stepUrl url model =
+    let
+        session =
+            toSession model
+    in
+    case Route.fromUrl url of
+        Just Route.Home ->
+            Home.init session
+                |> stepPage Home HomeMsg model
+
+        Just Route.Login ->
+            Login.init session
+                |> stepPage Login LoginMsg model
+
+        Just Route.Signup ->
+            Signup.init session
+                |> stepPage Signup SignupMsg model
+
+        Nothing ->
+            ( NotFound session, Cmd.none )
+
+
+stepPage : (pageModel -> Model) -> (pageMsg -> Msg) -> Model -> ( pageModel, Cmd pageMsg ) -> ( Model, Cmd Msg )
+stepPage toModel toMsg _ ( pageModel, pageMsg ) =
+    ( toModel pageModel
+    , Cmd.map toMsg pageMsg
+    )
 
 
 toSession : Model -> Session

@@ -8,7 +8,7 @@ module Route exposing
 import Browser.Navigation exposing (Key)
 import Element exposing (Attribute, Element)
 import Url exposing (Url)
-import Url.Parser as Parser exposing (Parser, oneOf, s, string)
+import Url.Parser as Parser exposing (Parser, oneOf, s)
 
 
 
@@ -31,7 +31,7 @@ parser =
 
 
 
---
+-- PUBLIC NAVIGATION HELPERS
 
 
 link : List (Attribute msg) -> Element msg -> Route -> Element msg
@@ -53,7 +53,7 @@ fromUrl =
 
 
 
---
+-- PRIVATE HELPERS
 
 
 toString : Route -> String

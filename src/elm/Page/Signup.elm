@@ -23,6 +23,10 @@ import Session exposing (Session)
 import Utils exposing (onEnter)
 
 
+
+-- MODEL
+
+
 type alias Model =
     { error : Maybe Auth.SignupError
     , form : Auth.AuthInfo
@@ -49,6 +53,10 @@ init session =
     ( model
     , cmd
     )
+
+
+
+-- UDPATE
 
 
 type Msg
@@ -87,6 +95,10 @@ updateForm transform model =
     ( { model | form = transform model.form }, Cmd.none )
 
 
+
+--SUBSCRIPTIONS
+
+
 subscriptions : Model -> Sub Msg
 subscriptions model =
     let
@@ -97,6 +109,10 @@ subscriptions model =
         [ Session.changes GotSession key
         , Auth.onSignupFailed GotError
         ]
+
+
+
+-- VIEW
 
 
 view : Model -> Element Msg
@@ -124,21 +140,7 @@ viewError maybeError =
                 none
 
             Just error ->
-                case error of
-                    Auth.EmailAlreadyInUse message ->
-                        text message
-
-                    Auth.OperationNotAllowed message ->
-                        text message
-
-                    Auth.WeakPassword message ->
-                        text message
-
-                    Auth.SignupError (Auth.InvalidEmail message) ->
-                        text message
-
-                    Auth.SignupError (Auth.Other _ message) ->
-                        text message
+                text (Auth.fromSignupError error)
         ]
 
 
@@ -184,6 +186,10 @@ viewForm form =
         , label = text "Sign Up"
         }
     ]
+
+
+
+-- EXPORT
 
 
 toSession : Model -> Session
