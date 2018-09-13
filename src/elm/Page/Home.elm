@@ -2,8 +2,6 @@ module Page.Home exposing
     ( Model
     , Msg
     , init
-    , subscriptions
-    , toSession
     , update
     , view
     )
@@ -14,6 +12,7 @@ import Element.Region as Region
 import Html.Attributes
 import Http
 import Markdown
+import Palette.Typography as Typo
 import Session exposing (Session)
 
 
@@ -22,17 +21,15 @@ import Session exposing (Session)
 
 
 type alias Model =
-    { session : Session
-    , content : String
+    { content : String
     }
 
 
-init : Session -> ( Model, Cmd Msg )
-init session =
+init : ( Model, Cmd Msg )
+init =
     let
         initModel =
-            { session = session
-            , content = ""
+            { content = ""
             }
 
         initCmd =
@@ -48,7 +45,6 @@ init session =
 
 type Msg
     = GotContent (Result Http.Error String)
-    | GotSession Session
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -59,18 +55,6 @@ update msg model =
 
         GotContent (Err _) ->
             ( { model | content = "Could not load content" }, Cmd.none )
-
-        GotSession session ->
-            ( { model | session = session }, Cmd.none )
-
-
-
--- SUBSCRIPTIONS
-
-
-subscriptions : Model -> Sub Msg
-subscriptions model =
-    Session.changes GotSession (Session.navKey model.session)
 
 
 
@@ -84,7 +68,8 @@ view model =
         , spacing 10
         , padding 20
         , centerX
-        , Font.size 14
+        , Typo.content
+        , Typo.medium
         , Font.justify
         , Region.mainContent
         ]
@@ -93,12 +78,3 @@ view model =
                 [ Html.Attributes.class "markdown-content" ]
                 model.content
         ]
-
-
-
--- EXPORT
-
-
-toSession : Model -> Session
-toSession =
-    .session

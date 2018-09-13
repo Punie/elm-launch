@@ -1,12 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Open+Sans');
-
-.markdown-content {
-  background-color: lavender;
-  padding: 10px;
-
-  blockquote {
-    color: dimgrey;
-    padding: 0 1em;
-    border-left: 0.25em solid mediumpurple;
-  }
-}
+@import url('https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i,700,700i|Roboto:300,300i,400,700,700i');
+@import url('https://cdn.rawgit.com/tonsky/FiraCode/1.205/distr/fira_code.css');
+@import '~highlight.js/styles/atom-one-dark';
+@import 'partials/markdown';

@@ -1,0 +1,48 @@
+@import 'variables';
+
+.markdown-content {
+  color: $dark-grey;
+  font-family: $roboto;
+  font-size: $medium;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: $lato;
+  }
+
+  h1 {
+    font-size: $xxlarge;
+  }
+
+  h2 {
+    font-size: $xlarge;
+  }
+
+  h3 {
+    font-size: $large;
+  }
+
+  blockquote {
+    background-color: lighten($quote-bg, 16);
+    border-radius: $border-radius;
+    color: lighten($dark-grey, 16);
+    margin: 0;
+    padding: $small-spacing $xxlarge-spacing;
+  }
+
+  pre {
+    background-color: $atom-bg;
+    border-radius: $border-radius;
+    color: $atom-fg;
+    margin: $medium-spacing 0;
+    padding: $medium-spacing;
+  }
+
+  code {
+    font-family: $fira;
+  }
+}

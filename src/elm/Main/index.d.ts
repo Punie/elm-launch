@@ -30,8 +30,14 @@ export namespace Elm {
     photoURL: string | null;
   }
 
+  export interface WindowSize {
+    width: number;
+    height: number;
+  }
+
   export interface Flags {
     user: User | null;
+    windowSize: WindowSize;
   }
 
   export interface Ports {

@@ -3,7 +3,6 @@ module Page.Signup exposing
     , Msg
     , init
     , subscriptions
-    , toSession
     , update
     , view
     )
@@ -18,6 +17,7 @@ import Element.Font as Font
 import Element.Input as Input
 import Element.Region as Region
 import Html exposing (Html)
+import Palette.Typography as Typo
 import Route exposing (Route)
 import Session exposing (Session)
 import Utils exposing (onEnter)
@@ -30,22 +30,20 @@ import Utils exposing (onEnter)
 type alias Model =
     { error : Maybe Auth.SignupError
     , form : Auth.AuthInfo
-    , session : Session
     }
 
 
-init : Session -> ( Model, Cmd Msg )
-init session =
+init : Key -> Session -> ( Model, Cmd Msg )
+init key session =
     let
         model =
             { error = Nothing
             , form = { email = "", password = "" }
-            , session = session
             }
 
         cmd =
             if Session.isLoggedIn session then
-                Route.pushUrl (Session.navKey session) Route.Home
+                Route.pushUrl key Route.Home
 
             else
                 Cmd.none
@@ -63,7 +61,6 @@ type Msg
     = SubmittedForm
     | EnteredEmail String
     | EnteredPassword String
-    | GotSession Session
     | GotError Auth.SignupError
 
 
@@ -78,11 +75,6 @@ update msg model =
 
         EnteredPassword password ->
             updateForm (\form -> { form | password = password }) model
-
-        GotSession session ->
-            ( { model | session = session }
-            , Route.pushUrl (Session.navKey session) Route.Home
-            )
 
         GotError error ->
             ( { model | error = Just error }
@@ -100,15 +92,8 @@ updateForm transform model =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions model =
-    let
-        key =
-            Session.navKey model.session
-    in
-    Sub.batch
-        [ Session.changes GotSession key
-        , Auth.onSignupFailed GotError
-        ]
+subscriptions _ =
+    Auth.onSignupFailed GotError
 
 
 
@@ -121,6 +106,7 @@ view model =
         [ width (px 400)
         , alignTop
         , centerX
+        , Typo.content
         , spacing 12
         , padding 10
         ]
@@ -133,7 +119,7 @@ viewError : Maybe Auth.SignupError -> Element Msg
 viewError maybeError =
     paragraph
         [ Font.justify
-        , Font.size 12
+        , Typo.small
         ]
         [ case maybeError of
             Nothing ->
@@ -148,13 +134,14 @@ viewForm : Auth.AuthInfo -> List (Element Msg)
 viewForm form =
     [ el
         [ Region.heading 2
-        , Font.size 24
+        , Typo.large
+        , Typo.meta
         , centerX
         ]
         (text "Sign Up")
     , Input.email
         [ spacing 12
-        , Font.size 16
+        , Typo.medium
         , htmlAttribute (onEnter SubmittedForm)
         ]
         { onChange = EnteredEmail
@@ -164,7 +151,7 @@ viewForm form =
         }
     , Input.currentPassword
         [ spacing 12
-        , Font.size 16
+        , Typo.medium
         , htmlAttribute (onEnter SubmittedForm)
         ]
         { onChange = EnteredPassword
@@ -176,7 +163,7 @@ viewForm form =
     , Input.button
         [ Border.rounded 5
         , Border.width 1
-        , Font.size 20
+        , Typo.medium
         , alignRight
         , padding 12
         , width (px 128)
@@ -186,12 +173,3 @@ viewForm form =
         , label = text "Sign Up"
         }
     ]
-
-
-
--- EXPORT
-
-
-toSession : Model -> Session
-toSession =
-    .session

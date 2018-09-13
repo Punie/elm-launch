@@ -3,69 +3,57 @@ module Session exposing
     , changes
     , init
     , isLoggedIn
-    , navKey
     , user
     )
 
 import Auth
-import Browser.Navigation exposing (Key)
 import User exposing (User)
 
 
 type Session
-    = LoggedIn Key User
-    | Guest Key
+    = LoggedIn User
+    | Guest
 
 
-init : Key -> Maybe User -> Session
-init key maybeUser =
+init : Maybe User -> Session
+init maybeUser =
     case maybeUser of
         Just user_ ->
-            LoggedIn key user_
+            LoggedIn user_
 
         Nothing ->
-            Guest key
-
-
-navKey : Session -> Key
-navKey session =
-    case session of
-        LoggedIn key _ ->
-            key
-
-        Guest key ->
-            key
+            Guest
 
 
 user : Session -> Maybe User
 user session =
     case session of
-        LoggedIn _ user_ ->
+        LoggedIn user_ ->
             Just user_
 
-        Guest _ ->
+        Guest ->
             Nothing
 
 
 isLoggedIn : Session -> Bool
 isLoggedIn session =
     case session of
-        LoggedIn _ _ ->
+        LoggedIn _ ->
             True
 
-        Guest _ ->
+        Guest ->
             False
 
 
-changes : (Session -> msg) -> Key -> Sub msg
-changes toMsg key =
+changes : (Session -> msg) -> Sub msg
+changes toMsg =
     let
         toSessionMsg maybeUser =
             case maybeUser of
                 Just val ->
-                    toMsg (LoggedIn key val)
+                    toMsg (LoggedIn val)
 
                 Nothing ->
-                    toMsg (Guest key)
+                    toMsg Guest
     in
     Auth.onAuthStateChange toSessionMsg

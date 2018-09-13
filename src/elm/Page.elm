@@ -8,25 +8,36 @@ import Element.Font as Font
 import Element.Input as Input
 import Element.Lazy exposing (lazy2)
 import Element.Region as Region
+import Palette.Colors exposing (..)
+import Palette.Typography as Typo
 import Route
 import Session exposing (Session)
 
 
-view : msg -> Session -> { title : String, content : Element msg } -> Document msg
-view logoutMsg session { title, content } =
-    { title = title ++ " - Elm Launch"
-    , body = [ layout [] (view_ logoutMsg session content) ]
+type alias Details msg a =
+    { title : String
+    , content : Element a
+    , session : Session
+    , logoutMsg : msg
     }
 
 
-view_ : msg -> Session -> Element msg -> Element msg
-view_ logoutMsg session content =
+view : (a -> msg) -> Details msg a -> Document msg
+view toMsg { title, content, session, logoutMsg } =
+    { title = title ++ " - Elm Launch"
+    , body =
+        [ layout [] (view_ toMsg logoutMsg session content) ]
+    }
+
+
+view_ : (a -> msg) -> msg -> Session -> Element a -> Element msg
+view_ toMsg logoutMsg session content =
     column
         [ width fill
         , height fill
         ]
         [ lazy2 viewHeader logoutMsg session
-        , content
+        , Element.map toMsg content
         , viewFooter
         ]
 
@@ -35,6 +46,9 @@ viewHeader : msg -> Session -> Element msg
 viewHeader logoutMsg session =
     row
         [ Region.navigation
+        , Background.color darkgrey
+        , Font.color lightgrey
+        , Typo.meta
         , width fill
         , height shrink
         , padding 20
@@ -49,7 +63,7 @@ siteTitle : Element msg
 siteTitle =
     Route.link
         [ Region.heading 1
-        , Font.size 24
+        , Typo.xlarge
         , alignLeft
         ]
         (text "Elm Launch")
@@ -62,8 +76,7 @@ navLinks logoutMsg session =
         links =
             if Session.isLoggedIn session then
                 [ Input.button
-                    [ Font.size 16
-                    , Font.color (rgb 0 0 0)
+                    [ Typo.medium
                     , padding 8
                     ]
                     { onPress = Just logoutMsg
@@ -73,15 +86,13 @@ navLinks logoutMsg session =
 
             else
                 [ Route.link
-                    [ Font.size 16
-                    , Font.color (rgb 0 0 0)
+                    [ Typo.medium
                     , padding 8
                     ]
                     (text "Sign In")
                     Route.Login
                 , Route.link
-                    [ Font.size 16
-                    , Font.color (rgb 0 0 0)
+                    [ Typo.medium
                     , padding 8
                     ]
                     (text "Sign Up")
@@ -98,7 +109,8 @@ navLinks logoutMsg session =
 viewFooter : Element msg
 viewFooter =
     row
-        [ Background.color (rgb255 173 216 230)
+        [ Border.widthEach { bottom = 0, left = 0, right = 0, top = 1 }
+        , Border.color lightgrey
         , Region.footer
         , width fill
         , alignBottom
@@ -107,7 +119,8 @@ viewFooter =
         ]
         [ el
             [ centerX
-            , Font.size 12
+            , Typo.small
+            , Typo.content
             ]
             (text "Elm Launch - Copyright Hugo Saracino - Code under BSD-3-Clause Licence")
         ]
