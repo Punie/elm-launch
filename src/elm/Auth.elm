@@ -1,19 +1,34 @@
 port module Auth exposing
-    ( AuthInfo
-    , CommonError(..)
-    , LoginError(..)
-    , SignupError(..)
-    , fromLoginError
-    , fromSignupError
-    , login
-    , logout
-    , onAuthStateChange
-    , onLoginFailed
-    , onSignupFailed
-    , signup
+    ( AuthInfo, login, signup, onAuthStateChange, logout
+    , LoginError, SignupError, onLoginFailed, onSignupFailed
+    , fromLoginError, fromSignupError
     )
 
+{-| This port module handles the interaction with firebase-based authentication
+and converts errors into nice Elm Union Types
+
+
+# Authentication
+
+@docs AuthInfo, login, signup, onAuthStateChange, logout
+
+
+# Errors
+
+@docs LoginError, SignupError, onLoginFailed, onSignupFailed
+
+
+# Error rendering
+
+@docs fromLoginError, fromSignupError
+
+-}
+
 import User exposing (User)
+
+
+
+-- TYPES
 
 
 type alias AuthInfo =
@@ -26,11 +41,6 @@ type alias AuthError =
     { code : String
     , message : String
     }
-
-
-type CommonError
-    = InvalidEmail String
-    | Other String String
 
 
 type LoginError
@@ -47,22 +57,35 @@ type SignupError
     | SignupError CommonError
 
 
+type CommonError
+    = InvalidEmail String
+    | Other String String
+
+
+
+-- PORTS
+
+
 port login : AuthInfo -> Cmd msg
 
 
-port loginFailed : (AuthError -> msg) -> Sub msg
-
-
 port signup : AuthInfo -> Cmd msg
-
-
-port signupFailed : (AuthError -> msg) -> Sub msg
 
 
 port logout : () -> Cmd msg
 
 
 port onAuthStateChange : (Maybe User -> msg) -> Sub msg
+
+
+port loginFailed : (AuthError -> msg) -> Sub msg
+
+
+port signupFailed : (AuthError -> msg) -> Sub msg
+
+
+
+-- AUTHENTICATION ERROR MARSHALLING
 
 
 onLoginFailed : (LoginError -> msg) -> Sub msg
@@ -73,6 +96,10 @@ onLoginFailed toMsg =
 onSignupFailed : (SignupError -> msg) -> Sub msg
 onSignupFailed toMsg =
     signupFailed (toMsg << toSignupError)
+
+
+
+-- ERROR RENDERING
 
 
 fromLoginError : LoginError -> String
@@ -114,7 +141,7 @@ fromSignupError error =
 
 
 
--- HELPERS
+-- PRIVATE HELPERS
 
 
 toLoginError : AuthError -> LoginError
