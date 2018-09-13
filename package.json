@@ -1,6 +1,6 @@
 {
   "name": "elm-launch",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Elm starter template with typescript, firebase and webpack",
   "repository": {
     "type": "git",
