@@ -2,6 +2,11 @@
 
 An opinionated example for scaffolding an Elm-based single-page application with firebase authentication, typescript interop and webpack.
 
+[![dependencies Status](https://david-dm.org/Punie/elm-launch/status.svg)](https://david-dm.org/Punie/elm-launch)
+[![Known Vulnerabilities](https://snyk.io/test/github/Punie/elm-launch/badge.svg?targetFile=package.json)](https://snyk.io/test/github/Punie/elm-launch?targetFile=package.json)
+[![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/Punie/elm-launch/issues)
+[![License: BSD 3-Clause](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
+
 #### [Demo](https://elm-launch.firebaseapp.com/)
 
 #### Table of contents :scroll:
